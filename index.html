@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jadwal Tim Humas FTK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F2E8;
+    --paper-deep:#EFE8D8;
+    --ink:#20241F;
+    --ink-soft:#5B6357;
+    --green-deep:#1F3D30;
+    --green-mid:#2E5943;
+    --gold:#B8892B;
+    --gold-soft:#E9D6A8;
+    --line:#D9CFB6;
+    --free:#EAF1E4;
+    --free-border:#9DBB8B;
+    --busy:#F4E4D4;
+    --busy-border:#C99A5B;
+    --danger:#A5473A;
+    --card:#FFFEFB;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Header ---------- */
+  .masthead{
+    background:var(--green-deep);
+    color:var(--paper);
+    padding:26px 28px;
+    border-bottom:4px solid var(--gold);
+  }
+  .masthead-inner{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .masthead h1{
+    font-size:clamp(24px,3.6vw,36px);
+    margin:0;
+    color:#fff;
+    line-height:1.05;
+  }
+  .masthead .sub{
+    margin-top:6px;
+    color:var(--gold-soft);
+    font-size:13.5px;
+    max-width:440px;
+    line-height:1.5;
+  }
+  .admin-zone{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .admin-badge{
+    font-size:12px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(233,214,168,0.4);
+    color:var(--gold-soft);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .admin-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);}
+  .admin-btn{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    padding:8px 14px;
+    border-radius:7px;
+    border:1px solid var(--gold-soft);
+    background:transparent;
+    color:var(--gold-soft);
+    cursor:pointer;
+  }
+  .admin-btn:hover{background:rgba(233,214,168,0.12);}
+  .admin-btn.logout{border-color:rgba(255,255,255,0.3); color:#fff;}
+  .link-btn{
+    background:none; border:none; padding:0;
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    color:var(--gold-soft);
+    text-decoration:underline;
+    cursor:pointer;
+  }
+
+  /* ---------- Layout ---------- */
+  .shell{
+    max-width:1180px;
+    margin:0 auto;
+    padding:26px 24px 70px;
+    display:grid;
+    grid-template-columns:270px 1fr;
+    gap:22px;
+  }
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    align-self:start;
+  }
+  .sidebar h2{
+    font-size:18px;
+    margin:0 0 4px;
+    color:var(--green-deep);
+  }
+  .sidebar .count{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .member-list{
+    list-style:none;
+    margin:0 0 12px;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    max-height:520px;
+    overflow-y:auto;
+  }
+  .member-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 10px;
+    border-radius:8px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .member-row:hover{background:var(--paper-deep);}
+  .member-row.active{
+    background:var(--green-deep);
+    border-color:var(--green-deep);
+  }
+  .member-row.active .m-name, .member-row.active .m-count{color:#fff;}
+  .m-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--free-border);
+    flex:none;
+  }
+  .member-row.active .m-dot{background:var(--gold);}
+  .m-name{
+    font-size:14.5px;
+    font-weight:500;
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .m-count{
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .add-member{
+    width:100%;
+    padding:9px 10px;
+    border:1.5px dashed var(--line);
+    background:transparent;
+    border-radius:8px;
+    color:var(--green-mid);
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .add-member:hover{border-color:var(--green-mid); background:var(--paper-deep);}
+  .locked-note{
+    font-size:12px;
+    color:var(--ink-soft);
+    font-style:italic;
+    padding:9px 2px 2px;
+    line-height:1.5;
+  }
+
+  /* ---------- Main ---------- */
+  .main{display:flex; flex-direction:column; gap:20px;}
+  .tabs{
+    display:flex;
+    gap:4px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:5px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:11px 14px;
+    border:none;
+    background:transparent;
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .tab-btn.active{
+    background:var(--green-deep);
+    color:#fff;
+  }
+
+  .panel{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px;
+    display:none;
+  }
+  .panel.active{display:block;}
+
+  .panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .panel-head h2{
+    margin:0 0 4px;
+    font-size:22px;
+    color:var(--green-deep);
+  }
+  .panel-head p{
+    margin:0;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    max-width:460px;
+    line-height:1.5;
+  }
+  .name-edit{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .name-edit input{
+    font-family:'Fraunces',serif;
+    font-size:20px;
+    font-weight:600;
+    color:var(--green-deep);
+    border:none;
+    background:transparent;
+    border-bottom:2px solid transparent;
+    padding:2px 2px 4px;
+    max-width:220px;
+  }
+  .name-edit input:focus{outline:none; border-bottom-color:var(--gold);}
+  .name-edit input:disabled{color:var(--ink); cursor:default;}
+  .remove-btn{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--danger);
+    font-size:12.5px;
+    font-weight:600;
+    padding:8px 12px;
+    border-radius:7px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .remove-btn:hover{background:#FBEEEA;}
+
+  .toolbar-row{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:10px;
+  }
+  .add-hour-btn{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    padding:8px 13px;
+    border-radius:7px;
+    border:1.5px dashed var(--line);
+    background:transparent;
+    color:var(--green-mid);
+    cursor:pointer;
+  }
+  .add-hour-btn:hover{border-color:var(--green-mid); background:var(--paper-deep);}
+
+  /* ---------- Grid Jadwal ---------- */
+  .grid-wrap{overflow-x:auto;}
+  table.sched{
+    border-collapse:collapse;
+    width:100%;
+    min-width:640px;
+  }
+  table.sched th, table.sched td{
+    border:1px solid var(--line);
+    text-align:center;
+  }
+  table.sched thead th{
+    background:var(--paper-deep);
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--green-deep);
+    padding:10px 6px;
+  }
+  table.sched thead th:first-child{
+    background:var(--paper);
+    border:none;
+  }
+  table.sched tbody th{
+    background:var(--paper-deep);
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    padding:0;
+    white-space:nowrap;
+  }
+  .hour-label-btn{
+    width:100%;
+    padding:8px 6px;
+    border:none;
+    background:transparent;
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:default;
+  }
+  .hour-label-btn.editable{cursor:pointer;}
+  .hour-label-btn.editable:hover{background:var(--gold-soft); color:var(--green-deep);}
+  table.sched td{
+    padding:0;
+    height:46px;
+    width:110px;
+  }
+  .cell-btn{
+    width:100%;
+    height:100%;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    font-weight:600;
+    padding:4px;
+    line-height:1.25;
+    color:var(--ink);
+    transition:background .12s ease;
+  }
+  .cell-btn.free{background:var(--free);}
+  .cell-btn.free:hover{background:#DCEAD3;}
+  .cell-btn.busy{
+    background:var(--busy);
+    color:#6B4A22;
+    border-left:3px solid var(--busy-border);
+  }
+  .cell-btn.busy:hover{background:#EFD9BC;}
+  .cell-btn.readonly{cursor:default;}
+  .cell-btn.readonly.free:hover{background:var(--free);}
+  .cell-btn.readonly.busy:hover{background:var(--busy);}
+
+  .legend{
+    display:flex;
+    gap:18px;
+    margin-top:14px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    flex-wrap:wrap;
+  }
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .swatch.free{background:var(--free); border:1px solid var(--free-border);}
+  .swatch.busy{background:var(--busy); border:1px solid var(--busy-border);}
+
+  /* ---------- Cek Kosong ---------- */
+  .check-controls{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    margin-bottom:22px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--green-mid);
+  }
+  select{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:9px 12px;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    background:#fff;
+    color:var(--ink);
+    min-width:150px;
+  }
+  .result-cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  @media (max-width:600px){.result-cols{grid-template-columns:1fr;}}
+  .result-col h3{
+    font-size:15px;
+    margin:0 0 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .result-col h3 .swatch{width:10px;height:10px;}
+  .result-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+  }
+  .result-list li{
+    padding:10px 12px;
+    border-radius:8px;
+    font-size:13.5px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .result-list li.free-item{background:var(--free); border:1px solid var(--free-border);}
+  .result-list li.busy-item{background:var(--busy); border:1px solid var(--busy-border); color:#6B4A22;}
+  .result-list .act{font-size:12px; color:var(--ink-soft); font-weight:500;}
+  .empty-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-style:italic;
+    padding:10px 0;
+  }
+
+  .status-bar{
+    font-size:12px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:6px;
+  }
+
+  /* modal */
+  .modal-bg{
+    position:fixed; inset:0;
+    background:rgba(20,26,20,0.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+    padding:20px;
+  }
+  .modal-bg.show{display:flex;}
+  .modal{
+    background:#fff;
+    border-radius:10px;
+    padding:22px;
+    width:100%;
+    max-width:360px;
+    border:1px solid var(--line);
+  }
+  .modal h3{margin:0 0 4px; font-size:17px; color:var(--green-deep);}
+  .modal .modal-sub{font-size:12.5px; color:var(--ink-soft); margin-bottom:14px; line-height:1.5;}
+  .modal input{
+    width:100%;
+    padding:10px 12px;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    margin-bottom:14px;
+  }
+  .modal .modal-error{
+    font-size:12.5px;
+    color:var(--danger);
+    margin:-8px 0 12px;
+    display:none;
+  }
+  .modal-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;}
+  .btn{
+    padding:9px 16px;
+    border-radius:7px;
+    border:none;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn-primary{background:var(--green-deep); color:#fff;}
+  .btn-primary:hover{background:var(--green-mid);}
+  .btn-ghost{background:transparent; color:var(--ink-soft); border:1px solid var(--line);}
+  .btn-clear{background:#FBEEEA; color:var(--danger);}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <h1>Jadwal Tim Humas FTK</h1>
+      <div class="sub">Kelola jadwal 14 anggota dan cek siapa yang sedang kosong sebelum menugaskan sesuatu.</div>
+    </div>
+    <div class="admin-zone" id="adminZone"></div>
+  </div>
+</div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <h2>Anggota Tim</h2>
+    <div class="count" id="memberCount">14 anggota</div>
+    <ul class="member-list" id="memberList"></ul>
+    <button class="add-member" id="addMemberBtn">+ Tambah anggota</button>
+    <div class="locked-note" id="lockedNote" style="display:none;">Masuk sebagai admin untuk menambah anggota.</div>
+  </aside>
+
+  <div class="main">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="jadwal">Jadwal Anggota</button>
+      <button class="tab-btn" data-tab="cek">Cek Siapa Kosong</button>
+    </div>
+
+    <!-- PANEL: JADWAL -->
+    <section class="panel active" id="panel-jadwal">
+      <div class="panel-head">
+        <div class="name-edit">
+          <input type="text" id="nameInput" maxlength="40">
+        </div>
+        <button class="remove-btn" id="removeMemberBtn">Hapus anggota ini</button>
+      </div>
+      <p id="editHint" style="font-size:13px;color:var(--ink-soft);margin:-8px 0 16px;">Klik satu sel untuk menandai anggota sedang ada kegiatan (kuliah, rapat, dll) pada hari dan jam tersebut. Klik lagi untuk mengosongkan atau mengubah keterangan.</p>
+
+      <div class="toolbar-row" id="hourToolbar" style="display:none;">
+        <button class="add-hour-btn" id="addHourBtn">+ Tambah jam</button>
+      </div>
+
+      <div class="grid-wrap">
+        <table class="sched">
+          <thead>
+            <tr>
+              <th>Jam</th>
+              <th>Senin</th>
+              <th>Selasa</th>
+              <th>Rabu</th>
+              <th>Kamis</th>
+              <th>Jumat</th>
+              <th>Sabtu</th>
+            </tr>
+          </thead>
+          <tbody id="schedBody"></tbody>
+        </table>
+      </div>
+
+      <div class="legend">
+        <span><span class="swatch free"></span> Kosong / tersedia</span>
+        <span><span class="swatch busy"></span> Ada kegiatan</span>
+      </div>
+    </section>
+
+    <!-- PANEL: CEK KOSONG -->
+    <section class="panel" id="panel-cek">
+      <div class="panel-head">
+        <div>
+          <h2>Cek Siapa Kosong</h2>
+          <p>Pilih hari dan jam, sistem akan menampilkan anggota yang tersedia dan yang sedang ada kegiatan.</p>
+        </div>
+      </div>
+
+      <div class="check-controls">
+        <div class="field">
+          <label>Hari</label>
+          <select id="checkDay">
+            <option>Senin</option>
+            <option>Selasa</option>
+            <option>Rabu</option>
+            <option>Kamis</option>
+            <option>Jumat</option>
+            <option>Sabtu</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Jam</label>
+          <select id="checkHour"></select>
+        </div>
+      </div>
+
+      <div class="result-cols">
+        <div class="result-col">
+          <h3><span class="swatch free"></span> Kosong</h3>
+          <ul class="result-list" id="freeList"></ul>
+        </div>
+        <div class="result-col">
+          <h3><span class="swatch busy"></span> Ada kegiatan</h3>
+          <ul class="result-list" id="busyList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="status-bar" id="statusBar">Memuat data...</div>
+  </div>
+</div>
+
+<!-- Modal isi kegiatan -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3 id="modalTitle">Tandai kegiatan</h3>
+    <div class="modal-sub" id="modalSub"></div>
+    <input type="text" id="modalInput" placeholder="Contoh: Kuliah Media Komunikasi">
+    <div class="modal-actions">
+      <button class="btn btn-clear" id="modalClear">Kosongkan</button>
+      <button class="btn btn-ghost" id="modalCancel">Batal</button>
+      <button class="btn btn-primary" id="modalSave">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal login admin -->
+<div class="modal-bg" id="loginModalBg">
+  <div class="modal">
+    <h3>Masuk sebagai Admin</h3>
+    <div class="modal-sub">Admin bisa menambah/menghapus anggota, mengatur jam, dan mengisi jadwal. Anggota lain hanya bisa melihat jadwal dan mengecek siapa yang kosong.</div>
+    <input type="password" id="loginInput" placeholder="Kata sandi admin">
+    <div class="modal-error" id="loginError">Kata sandi salah, coba lagi.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="loginCancel">Batal</button>
+      <button class="btn btn-primary" id="loginSubmit">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ganti kata sandi -->
+<div class="modal-bg" id="passModalBg">
+  <div class="modal">
+    <h3>Ganti Kata Sandi Admin</h3>
+    <div class="modal-sub">Kata sandi baru akan berlaku untuk semua orang yang membuka halaman ini.</div>
+    <input type="password" id="newPassInput" placeholder="Kata sandi baru (min. 4 karakter)">
+    <div class="modal-error" id="passError">Kata sandi minimal 4 karakter.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="passCancel">Batal</button>
+      <button class="btn btn-primary" id="passSubmit">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal kelola jam -->
+<div class="modal-bg" id="hourModalBg">
+  <div class="modal">
+    <h3 id="hourModalTitle">Tambah Jam</h3>
+    <div class="modal-sub">Contoh format: 17:00 - 18:00</div>
+    <input type="text" id="hourInput" placeholder="17:00 - 18:00">
+    <div class="modal-error" id="hourError">Isi jam terlebih dahulu.</div>
+    <div class="modal-actions">
+      <button class="btn btn-clear" id="hourDelete" style="display:none;">Hapus jam ini</button>
+      <button class="btn btn-ghost" id="hourCancel">Batal</button>
+      <button class="btn btn-primary" id="hourSave">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const ALL_HOUR_ID = "__ALL__";
+const STORAGE_KEY = "humas-ftk-jadwal-v1";
+const PASS_KEY = "humas-ftk-admin-pass-v1";
+const DEFAULT_PASSWORD = "humas2026";
+
+let state = { members: [], hours: [] };
+let activeMemberId = null;
+let modalCtx = null; // {day, hourId}
+let hourModalCtx = null; // existing hour object or null (add mode)
+let isAdmin = false; // in-memory only: resets on reload, not persisted by design
+let adminPassword = DEFAULT_PASSWORD;
+
+function uid(prefix){ return (prefix||'m') + '_' + Math.random().toString(36).slice(2,10); }
+
+function defaultHours(){
+  return [
+    { id: "h0",  label: "07:45 – 09:25" },
+    { id: "h1",  label: "07:45 – 10:20" },
+    { id: "h2",  label: "07:45 – 11:10" },
+    { id: "h3",  label: "08:35 – 10:20" },
+    { id: "h4",  label: "09:30 – 10:20" },
+    { id: "h5",  label: "09:30 – 11:10" },
+    { id: "h6",  label: "09:30 – 12:05" },
+    { id: "h7",  label: "09:30 – 12:55" },
+    { id: "h8",  label: "10:20 – 12:05" },
+    { id: "h9",  label: "10:20 – 12:55" },
+    { id: "h10", label: "10:21 – 12:05" },
+    { id: "h11", label: "10:21 – 12:55" },
+    { id: "h12", label: "11:15 – 12:55" },
+    { id: "h13", label: "12:05 – 12:55" },
+    { id: "h14", label: "12:55 – 14:00" },
+    { id: "h15", label: "14:00 – 15:40" },
+    { id: "h16", label: "14:00 – 16:20" },
+    { id: "h17", label: "14:00 – 17:15" },
+    { id: "h18", label: "15:40 – 17:15" },
+    { id: "h19", label: "16:25 – 18:05" }
+  ];
+}
+
+function defaultData(){
+  const members = [
+    { id: uid('m'), name: "Risya", schedule: {
+        "Senin": { "h0": "EFB01", "h7": "GnC01" },
+        "Rabu": { "h7": "ALS05", "h17": "CALL6" },
+        "Kamis": { "h2": "ETM08", "h12": "CCU01" },
+        "Jumat": { "h2": "EL002" }
+      } },
+    { id: uid('m'), name: "Zurratul", schedule: {
+        "Senin": { "h0": "Tathwir Manahij li Ta'lim Al-Lughah Al-Arabiyyah", "h9": "Al-Sharf Al-Ibtidaiy", "h16": "Al-Nahw Al-Ibtidaiy" },
+        "Selasa": { "h1": "Thuruq Ta'lim Al-Lughah Al-'Arabiyyah", "h12": "Al-Madkhal ila 'Ilmi Al-Lughah", "h16": "Al-Tarjamah" },
+        "Rabu": { "h1": "Tiknulujiy Ta'lim Al-Lughah Al-'Arabiyyah", "h9": "Tashmim wa Tathwir Wasail Ta'lim Al-Lughah Al-'Arabiyyah" },
+        "Kamis": { "h15": "Ilmu Al-Lughah Al-Nafsy" }
+      } },
+    { id: uid('m'), name: "Cut Yety", schedule: {
+        "Senin": { "h0": "Smart City", "h15": "Web Framework (Full Stack Development)", "h18": "Praktik Web Framework (Full Stack Development)" },
+        "Selasa": { "h0": "Pemrograman Berorientasi Objek", "h4": "Praktik Pemrograman Berorientasi Objek", "h10": "Interaksi Manusia Komputer", "h15": "Manajemen Sistem Informasi", "h18": "Praktik Manajemen Sistem Informasi" },
+        "Kamis": { "h3": "Micro Teaching", "h12": "Bisnis Digital" },
+        "Jumat": { "h5": "Cybersecurity" }
+      } },
+    { id: uid('m'), name: "Nasywa", schedule: {
+        "Senin": { "h1": "Pendidikan Keluarga", "h16": "Perlindungan Hak Anak" },
+        "Rabu": { "h19": "Ilmu Pendidikan" },
+        "Kamis": { "h12": "Pancasila", "h15": "Bahasa Arab" },
+        "Jumat": { "h15": "Wawasan Teknologi dan Komunikasi Ilmiah (WTKI)" },
+        "Sabtu": { "h7": "Kajian Sains Islam", "h15": "Bahasa Indonesia" }
+      } },
+    { id: uid('m'), name: "Alfithany", schedule: {
+        "Senin": { "h9": "Administrasi Server", "h16": "Basis Data" },
+        "Selasa": { "h1": "Interaksi Manusia dan Komputer", "h16": "Pemrograman Berorientasi Object" },
+        "Rabu": { "h15": "Manajemen, Kurikulum dan Strategi Pembelajaran TI" },
+        "Kamis": { "h5": "Matematika Diskrit", "h16": "Computational Thinking" },
+        "Jumat": { "h6": "Media Pembelajaran Interaktif" }
+      } },
+    { id: uid('m'), name: "Zaky", schedule: {
+        "Senin": { "h9": "Administrasi Server" },
+        "Selasa": { "h1": "Interaksi Manusia dan Komputer" },
+        "Rabu": { "h11": "Mata kuliah tidak lengkap pada sumber", "h16": "Basis Data" },
+        "Kamis": { "h1": "Media Pembelajaran Interaktif", "h11": "Pemrograman Berorientasi Object", "h16": "Computational Thinking" }
+      } },
+    { id: uid('m'), name: "Haikal", schedule: {
+        "Senin": { "h15": "Web Framework (Full Stack Development)", "h18": "Praktik Web Framework (Full Stack Development)" },
+        "Selasa": { "h0": "Pemrograman Berorientasi Objek", "h4": "Praktik Pemrograman Berorientasi Objek", "h15": "Manajemen Sistem Informasi", "h18": "Praktik Manajemen Sistem Informasi" },
+        "Rabu": { "h19": "Cybersecurity" },
+        "Kamis": { "h0": "Bisnis Digital", "h8": "Artificial Intelligence", "h13": "Praktik Artificial Intelligence", "h15": "Smart City" }
+      } },
+    { id: uid('m'), name: "Ijaz", schedule: {
+        "Selasa": { "h5": "Micro Teaching PAI" },
+        "Rabu": { "h0": "Fiq Muqarran" },
+        "Kamis": { "h14": "Magang MT PAI II" },
+        "Sabtu": { "h5": "Mazahib Islamiyah" }
+      } },
+    { id: uid('m'), name: "Yusuf", schedule: {
+        "Selasa": { "h5": "Micro Teaching PAI" },
+        "Rabu": { "h0": "Fiq Muqarran" },
+        "Kamis": { "h14": "Magang MT PAI II" }
+      } },
+    { id: uid('m'), name: "Raisa", schedule: {
+        "Selasa": { "h1": "Sistem Operasi dan Perakitan Komputer", "h12": "Ilmu Pendidikan" },
+        "Rabu": { "h9": "Algoritma dan Pemrograman", "h17": "Kajian Sains Islam" },
+        "Kamis": { "h5": "Bahasa Indonesia" },
+        "Jumat": { "h0": "Wawasan Teknologi dan Komunikasi Ilmiah (WTKI)", "h15": "Pancasila" },
+        "Sabtu": { "h0": "Bahasa Arab" }
+      } },
+    { id: uid('m'), name: "Hafidz", schedule: {
+        "Kamis": { "h15": "Fiq Muqarran", "h19": "Tarek Tasyri'" }
+      } }
+  ];
+  return { members, hours: defaultHours() };
+}
+
+async function loadData(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, true);
+    if(res && res.value){
+      state = JSON.parse(res.value);
+      if(!state.hours || !state.hours.length){ state.hours = defaultHours(); }
+      setStatus("Data tersimpan (bersama tim).");
+    } else {
+      state = defaultData();
+      await saveData();
+      setStatus("Data baru dibuat.");
+    }
+  }catch(e){
+    state = defaultData();
+    setStatus("Mode sementara — perubahan belum bisa tersimpan.");
+  }
+  try{
+    const p = await window.storage.get(PASS_KEY, true);
+    if(p && p.value){ adminPassword = p.value; }
+    else { await window.storage.set(PASS_KEY, DEFAULT_PASSWORD, true); }
+  }catch(e){ /* keep default password */ }
+
+  if(!activeMemberId && state.members.length){ activeMemberId = state.members[0].id; }
+  renderAll();
+}
+
+let saveTimer = null;
+function saveData(){
+  return new Promise((resolve) => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try{
+        await window.storage.set(STORAGE_KEY, JSON.stringify(state), true);
+        setStatus("Tersimpan otomatis.");
+      }catch(e){
+        setStatus("Gagal menyimpan — periksa koneksi.");
+      }
+      resolve();
+    }, 250);
+  });
+}
+
+function setStatus(msg){
+  document.getElementById('statusBar').textContent = msg;
+}
+
+function getMember(id){ return state.members.find(m => m.id === id); }
+
+function renderAll(){
+  renderAdminZone();
+  renderMemberList();
+  renderScheduleEditor();
+  renderCheckOptions();
+  renderCheckResults();
+}
+
+function renderAdminZone(){
+  const zone = document.getElementById('adminZone');
+  zone.innerHTML = '';
+  if(isAdmin){
+    const badge = document.createElement('div');
+    badge.className = 'admin-badge';
+    badge.innerHTML = '<span class="dot"></span>Mode admin aktif';
+    const changeBtn = document.createElement('button');
+    changeBtn.className = 'link-btn';
+    changeBtn.textContent = 'Ganti kata sandi';
+    changeBtn.style.marginLeft = '4px';
+    changeBtn.addEventListener('click', openPassModal);
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'admin-btn logout';
+    logoutBtn.textContent = 'Keluar';
+    logoutBtn.addEventListener('click', () => { isAdmin = false; renderAll(); });
+    zone.appendChild(badge);
+    zone.appendChild(changeBtn);
+    zone.appendChild(logoutBtn);
+  } else {
+    const loginBtn = document.createElement('button');
+    loginBtn.className = 'admin-btn';
+    loginBtn.textContent = 'Masuk sebagai Admin';
+    loginBtn.addEventListener('click', openLoginModal);
+    zone.appendChild(loginBtn);
+  }
+  document.getElementById('addMemberBtn').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('lockedNote').style.display = isAdmin ? 'none' : 'block';
+  document.getElementById('hourToolbar').style.display = isAdmin ? 'flex' : 'none';
+}
+
+function renderMemberList(){
+  const list = document.getElementById('memberList');
+  list.innerHTML = '';
+  document.getElementById('memberCount').textContent = state.members.length + ' anggota';
+  state.members.forEach(m => {
+    const busyCount = Object.values(m.schedule).reduce((acc, day) => acc + Object.keys(day).length, 0);
+    const li = document.createElement('li');
+    li.className = 'member-row' + (m.id === activeMemberId ? ' active' : '');
+    li.innerHTML = `<span class="m-dot"></span><span class="m-name"></span><span class="m-count">${busyCount} slot</span>`;
+    li.querySelector('.m-name').textContent = m.name;
+    li.addEventListener('click', () => {
+      activeMemberId = m.id;
+      document.querySelector('.tab-btn[data-tab="jadwal"]').click();
+      renderMemberList();
+      renderScheduleEditor();
+    });
+    list.appendChild(li);
+  });
+}
+
+function renderScheduleEditor(){
+  const member = getMember(activeMemberId);
+  const nameInput = document.getElementById('nameInput');
+  const removeBtn = document.getElementById('removeMemberBtn');
+  const editHint = document.getElementById('editHint');
+  removeBtn.style.display = isAdmin ? 'inline-block' : 'none';
+  nameInput.disabled = !isAdmin;
+  editHint.textContent = isAdmin
+    ? 'Klik satu sel untuk menandai kegiatan. Klik judul jam di sisi kiri untuk mengubah atau menghapus jam tersebut.'
+    : 'Ini tampilan lihat-saja. Masuk sebagai admin untuk mengisi atau mengubah jadwal.';
+
+  if(!member){
+    nameInput.value = '';
+    document.getElementById('schedBody').innerHTML = '';
+    return;
+  }
+  nameInput.value = member.name;
+
+  const body = document.getElementById('schedBody');
+  body.innerHTML = '';
+  state.hours.forEach(hour => {
+    const tr = document.createElement('tr');
+    const th = document.createElement('th');
+    const hourBtn = document.createElement('button');
+    hourBtn.className = 'hour-label-btn' + (isAdmin ? ' editable' : '');
+    hourBtn.textContent = hour.label;
+    if(isAdmin){
+      hourBtn.addEventListener('click', () => openHourModal(hour));
+    }
+    th.appendChild(hourBtn);
+    tr.appendChild(th);
+    DAYS.forEach(day => {
+      const td = document.createElement('td');
+      const activity = (member.schedule[day] || {})[hour.id];
+      const btn = document.createElement('button');
+      btn.className = 'cell-btn ' + (activity ? 'busy' : 'free') + (isAdmin ? '' : ' readonly');
+      btn.textContent = activity || '';
+      if(isAdmin){
+        btn.addEventListener('click', () => openModal(day, hour.id, hour.label));
+      }
+      td.appendChild(btn);
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+}
+
+function renderCheckOptions(){
+  const hourSel = document.getElementById('checkHour');
+  const prevVal = hourSel.value;
+  hourSel.innerHTML = '';
+  const allOpt = document.createElement('option');
+  allOpt.value = ALL_HOUR_ID;
+  allOpt.textContent = 'Umum (sepanjang hari)';
+  hourSel.appendChild(allOpt);
+  state.hours.forEach(hour => {
+    const opt = document.createElement('option');
+    opt.value = hour.id;
+    opt.textContent = hour.label;
+    hourSel.appendChild(opt);
+  });
+  if(prevVal === ALL_HOUR_ID || state.hours.some(h => h.id === prevVal)){ hourSel.value = prevVal; }
+}
+
+function renderCheckResults(){
+  const day = document.getElementById('checkDay').value;
+  const hourId = document.getElementById('checkHour').value;
+  const isAllDay = hourId === ALL_HOUR_ID;
+  const freeList = document.getElementById('freeList');
+  const busyList = document.getElementById('busyList');
+  freeList.innerHTML = '';
+  busyList.innerHTML = '';
+
+  let freeCount = 0, busyCount = 0;
+  state.members.forEach(m => {
+    const daySchedule = m.schedule[day] || {};
+    let activityLabel = '';
+    let hasActivity = false;
+    if(isAllDay){
+      // Kumpulkan semua kegiatan pada hari ini, urut sesuai urutan jam, lengkap dengan jamnya.
+      const activities = state.hours
+        .filter(hour => daySchedule[hour.id])
+        .map(hour => `${daySchedule[hour.id]} (${hour.label})`);
+      hasActivity = activities.length > 0;
+      activityLabel = activities.join(', ');
+    } else {
+      const activity = daySchedule[hourId];
+      const hourInfo = state.hours.find(h => h.id === hourId);
+      hasActivity = !!activity;
+      activityLabel = activity ? `${activity} (${hourInfo ? hourInfo.label : ''})` : '';
+    }
+    const li = document.createElement('li');
+    if(hasActivity){
+      li.className = 'busy-item';
+      li.innerHTML = `<span>${escapeHtml(m.name)}</span><span class="act">${escapeHtml(activityLabel)}</span>`;
+      busyList.appendChild(li);
+      busyCount++;
+    } else {
+      li.className = 'free-item';
+      li.innerHTML = `<span>${escapeHtml(m.name)}</span>`;
+      freeList.appendChild(li);
+      freeCount++;
+    }
+  });
+
+  const scopeText = isAllDay ? 'hari ini' : 'jam ini';
+  if(freeCount === 0){
+    freeList.innerHTML = `<li class="empty-note" style="background:none;border:none;">Tidak ada yang kosong sepanjang ${scopeText}.</li>`;
+  }
+  if(busyCount === 0){
+    busyList.innerHTML = `<li class="empty-note" style="background:none;border:none;">Semua anggota kosong pada ${scopeText}.</li>`;
+  }
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function openModal(day, hourId, label){
+  const member = getMember(activeMemberId);
+  if(!member) return;
+  modalCtx = { day, hourId };
+  document.getElementById('modalTitle').textContent = member.name + ' — ' + day;
+  document.getElementById('modalSub').textContent = 'Jam ' + label;
+  document.getElementById('modalInput').value = (member.schedule[day] || {})[hourId] || '';
+  document.getElementById('modalBg').classList.add('show');
+  document.getElementById('modalInput').focus();
+}
+
+function closeModal(){
+  document.getElementById('modalBg').classList.remove('show');
+  modalCtx = null;
+}
+
+async function saveModal(clear){
+  const member = getMember(activeMemberId);
+  if(!member || !modalCtx) return;
+  const { day, hourId } = modalCtx;
+  if(!member.schedule[day]) member.schedule[day] = {};
+  if(clear){
+    delete member.schedule[day][hourId];
+  } else {
+    const val = document.getElementById('modalInput').value.trim();
+    if(val){ member.schedule[day][hourId] = val; }
+    else { delete member.schedule[day][hourId]; }
+  }
+  closeModal();
+  renderScheduleEditor();
+  renderMemberList();
+  renderCheckResults();
+  await saveData();
+}
+
+// ---- admin login ----
+function openLoginModal(){
+  document.getElementById('loginInput').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('loginModalBg').classList.add('show');
+  document.getElementById('loginInput').focus();
+}
+function closeLoginModal(){
+  document.getElementById('loginModalBg').classList.remove('show');
+}
+function submitLogin(){
+  const val = document.getElementById('loginInput').value;
+  if(val === adminPassword){
+    isAdmin = true;
+    closeLoginModal();
+    renderAll();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+// ---- change password ----
+function openPassModal(){
+  document.getElementById('newPassInput').value = '';
+  document.getElementById('passError').style.display = 'none';
+  document.getElementById('passModalBg').classList.add('show');
+  document.getElementById('newPassInput').focus();
+}
+function closePassModal(){
+  document.getElementById('passModalBg').classList.remove('show');
+}
+async function submitPassChange(){
+  const val = document.getElementById('newPassInput').value;
+  if(val.length < 4){
+    document.getElementById('passError').style.display = 'block';
+    return;
+  }
+  adminPassword = val;
+  try{ await window.storage.set(PASS_KEY, adminPassword, true); }catch(e){}
+  closePassModal();
+  setStatus('Kata sandi admin diperbarui.');
+}
+
+// ---- kelola jam ----
+function openHourModal(existingHour){
+  hourModalCtx = existingHour || null;
+  document.getElementById('hourModalTitle').textContent = existingHour ? 'Ubah Jam' : 'Tambah Jam';
+  document.getElementById('hourInput').value = existingHour ? existingHour.label : '';
+  document.getElementById('hourError').style.display = 'none';
+  document.getElementById('hourDelete').style.display = existingHour ? 'inline-block' : 'none';
+  document.getElementById('hourModalBg').classList.add('show');
+  document.getElementById('hourInput').focus();
+}
+function closeHourModal(){
+  document.getElementById('hourModalBg').classList.remove('show');
+  hourModalCtx = null;
+}
+async function submitHourSave(){
+  const val = document.getElementById('hourInput').value.trim();
+  if(!val){
+    document.getElementById('hourError').style.display = 'block';
+    return;
+  }
+  if(hourModalCtx){
+    const h = state.hours.find(x => x.id === hourModalCtx.id);
+    if(h){ h.label = val; }
+  } else {
+    state.hours.push({ id: uid('h'), label: val });
+  }
+  closeHourModal();
+  renderScheduleEditor();
+  renderCheckOptions();
+  renderCheckResults();
+  await saveData();
+}
+async function submitHourDelete(){
+  if(!hourModalCtx) return;
+  if(!confirm('Hapus jam "' + hourModalCtx.label + '"? Semua catatan kegiatan pada jam ini untuk semua anggota akan ikut terhapus.')) return;
+  const hourId = hourModalCtx.id;
+  state.hours = state.hours.filter(h => h.id !== hourId);
+  state.members.forEach(m => {
+    DAYS.forEach(day => {
+      if(m.schedule[day]){ delete m.schedule[day][hourId]; }
+    });
+  });
+  closeHourModal();
+  renderScheduleEditor();
+  renderMemberList();
+  renderCheckOptions();
+  renderCheckResults();
+  await saveData();
+}
+
+// events
+document.getElementById('modalSave').addEventListener('click', () => saveModal(false));
+document.getElementById('modalClear').addEventListener('click', () => saveModal(true));
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('modalBg').addEventListener('click', (e) => { if(e.target.id === 'modalBg') closeModal(); });
+
+document.getElementById('loginSubmit').addEventListener('click', submitLogin);
+document.getElementById('loginCancel').addEventListener('click', closeLoginModal);
+document.getElementById('loginModalBg').addEventListener('click', (e) => { if(e.target.id === 'loginModalBg') closeLoginModal(); });
+document.getElementById('loginInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') submitLogin(); });
+
+document.getElementById('passSubmit').addEventListener('click', submitPassChange);
+document.getElementById('passCancel').addEventListener('click', closePassModal);
+document.getElementById('passModalBg').addEventListener('click', (e) => { if(e.target.id === 'passModalBg') closePassModal(); });
+document.getElementById('newPassInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') submitPassChange(); });
+
+document.getElementById('addHourBtn').addEventListener('click', () => openHourModal(null));
+document.getElementById('hourSave').addEventListener('click', submitHourSave);
+document.getElementById('hourDelete').addEventListener('click', submitHourDelete);
+document.getElementById('hourCancel').addEventListener('click', closeHourModal);
+document.getElementById('hourModalBg').addEventListener('click', (e) => { if(e.target.id === 'hourModalBg') closeHourModal(); });
+document.getElementById('hourInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') submitHourSave(); });
+
+document.getElementById('nameInput').addEventListener('input', async (e) => {
+  if(!isAdmin) return;
+  const member = getMember(activeMemberId);
+  if(!member) return;
+  member.name = e.target.value;
+  renderMemberList();
+  renderCheckResults();
+  await saveData();
+});
+
+document.getElementById('addMemberBtn').addEventListener('click', async () => {
+  if(!isAdmin) return;
+  const m = { id: uid('m'), name: 'Anggota Baru', schedule: {} };
+  state.members.push(m);
+  activeMemberId = m.id;
+  renderAll();
+  document.getElementById('nameInput').focus();
+  document.getElementById('nameInput').select();
+  await saveData();
+});
+
+document.getElementById('removeMemberBtn').addEventListener('click', async () => {
+  if(!isAdmin) return;
+  const member = getMember(activeMemberId);
+  if(!member) return;
+  if(!confirm('Hapus ' + member.name + ' dari daftar tim?')) return;
+  state.members = state.members.filter(m => m.id !== activeMemberId);
+  activeMemberId = state.members.length ? state.members[0].id : null;
+  renderAll();
+  await saveData();
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('checkDay').addEventListener('change', renderCheckResults);
+document.getElementById('checkHour').addEventListener('change', renderCheckResults);
+
+loadData();
+</script>
+
+</body>
+</html>
