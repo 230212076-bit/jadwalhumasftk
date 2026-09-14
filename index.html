@@ -726,7 +726,8 @@ function defaultHours(){
     { id: "h17", label: "14:00 – 17:15" },
     { id: "h18", label: "15:40 – 17:15" },
     { id: "h19", label: "16:25 – 18:05" },
-    { id: "h20", label: "11:15 – 14:00" }
+    { id: "h20", label: "11:15 – 14:00" },
+    { id: "h21", label: "07:45 – 09:30" }
   ];
 }
 
@@ -803,6 +804,20 @@ function defaultData(){
         "Kamis": { "h0": "BK untuk Anak Usia Dini", "h5": "Instrumentasi BK Tes" },
         "Jumat": { "h0": "Metodologi Penelitian", "h5": "Evaluasi dan Supervisi BK" },
         "Sabtu": { "h0": "Bahasa Arab" }
+      } },
+    { id: uid('m'), name: "Jheny", schedule: {
+        "Senin": { "h1": "Bimbingan dan Konseling Islam" },
+        "Selasa": { "h5": "Teknologi Pendidikan", "h20": "Metodologi Penelitian PAI", "h16": "Management Ledership, Klinis dan Monev Sekolah" },
+        "Rabu": { "h9": "Teknik Komunikasi dan Konseling PAI" },
+        "Kamis": { "h5": "Pendidikan Akidah Akhlaq MTsN/ SMP", "h13": "Magang MK D3P PAI I" },
+        "Jumat": { "h21": "Desain dan Perencanaan Pembelajaran PAI", "h5": "Masail Fiqhiyah", "h19": "Pendidikan Fiqih MTsN/ SMP" }
+      } },
+    { id: uid('m'), name: "Sulis", schedule: {
+        "Senin": { "h1": "Evaluasi Pembelajaran PAI", "h20": "Strategi dan Metode Pembelajaran PAI" },
+        "Selasa": { "h1": "SKI Modern dan Kontemporer", "h20": "Ulumul Quran" },
+        "Kamis": { "h1": "Media dan Teknologi Pembelajaran PAI", "h20": "Ulumul Hadist" },
+        "Jumat": { "h15": "Pengembangan Kurikulum PAI", "h19": "Akhlak Tasawuf" },
+        "Sabtu": { "h0": "Bahasa Inggris PAI" }
       } }
   ];
   return { members, hours: defaultHours() };
