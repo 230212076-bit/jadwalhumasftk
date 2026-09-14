@@ -414,7 +414,7 @@
     font-weight:700;
     color:var(--green-mid);
   }
-  select{
+  select, .field input[type="text"]{
     font-family:'Inter',sans-serif;
     font-size:14px;
     padding:9px 12px;
@@ -424,6 +424,8 @@
     color:var(--ink);
     min-width:150px;
   }
+  .field input[type="text"]::placeholder{ color:#9a9186; font-size:12.5px; }
+  .field-hint{ font-size:11px; color:#9a9186; margin-top:2px; }
   .result-cols{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -612,6 +614,11 @@
         <div class="field">
           <label>Jam</label>
           <select id="checkHour"></select>
+        </div>
+        <div class="field">
+          <label>Cari jam tertentu</label>
+          <input type="text" id="checkHourSearch" placeholder="mis. 09:30 atau 9.30" />
+          <span class="field-hint">Isi ini untuk cek pukul tertentu — otomatis mencakup semua MK yang sedang berlangsung di jam itu, walau jadwalnya lebih panjang.</span>
         </div>
       </div>
 
@@ -994,21 +1001,81 @@ function renderCheckOptions(){
   if(prevVal === ALL_HOUR_ID || state.hours.some(h => h.id === prevVal)){ hourSel.value = prevVal; }
 }
 
+function parseTimeQuery(str){
+  const digits = (str || '').replace(/[^0-9]/g, '');
+  if(!digits) return null;
+  let h, m;
+  if(digits.length <= 2){ h = parseInt(digits, 10); m = 0; }
+  else if(digits.length === 3){ h = parseInt(digits.slice(0, 1), 10); m = parseInt(digits.slice(1), 10); }
+  else { h = parseInt(digits.slice(0, 2), 10); m = parseInt(digits.slice(2, 4), 10); }
+  if(isNaN(h) || isNaN(m) || h > 23 || m > 59) return null;
+  return h * 60 + m;
+}
+
+function parseHourLabelRange(label){
+  const parts = (label || '').split('–').map(s => s.trim());
+  if(parts.length !== 2) return null;
+  const toMin = t => {
+    const bits = t.split(':').map(Number);
+    if(bits.length !== 2 || isNaN(bits[0]) || isNaN(bits[1])) return null;
+    return bits[0] * 60 + bits[1];
+  };
+  const start = toMin(parts[0]), end = toMin(parts[1]);
+  if(start === null || end === null) return null;
+  return { start, end };
+}
+
+function formatQueryTime(mins){
+  const h = String(Math.floor(mins / 60)).padStart(2, '0');
+  const m = String(mins % 60).padStart(2, '0');
+  return `${h}:${m}`;
+}
+
 function renderCheckResults(){
   const day = document.getElementById('checkDay').value;
   const hourId = document.getElementById('checkHour').value;
+  const searchRaw = document.getElementById('checkHourSearch').value.trim();
   const isAllDay = hourId === ALL_HOUR_ID;
   const freeList = document.getElementById('freeList');
   const busyList = document.getElementById('busyList');
   freeList.innerHTML = '';
   busyList.innerHTML = '';
 
+  let queryMinutes = null;
+  let matchedHours = null;
+  let searchInvalid = false;
+  if(searchRaw){
+    queryMinutes = parseTimeQuery(searchRaw);
+    if(queryMinutes === null){
+      searchInvalid = true;
+    } else {
+      matchedHours = state.hours.filter(hour => {
+        const r = parseHourLabelRange(hour.label);
+        return r && queryMinutes >= r.start && queryMinutes <= r.end;
+      });
+    }
+  }
+
+  if(searchInvalid){
+    freeList.innerHTML = `<li class="empty-note" style="background:none;border:none;">Format jam tidak dikenali. Coba mis. 09:30 atau 9.30.</li>`;
+    busyList.innerHTML = '';
+    return;
+  }
+
+  const isSearchMode = queryMinutes !== null;
+
   let freeCount = 0, busyCount = 0;
   state.members.forEach(m => {
     const daySchedule = m.schedule[day] || {};
     let activityLabel = '';
     let hasActivity = false;
-    if(isAllDay){
+    if(isSearchMode){
+      const activities = matchedHours
+        .filter(hour => daySchedule[hour.id])
+        .map(hour => `${daySchedule[hour.id]} (${hour.label})`);
+      hasActivity = activities.length > 0;
+      activityLabel = activities.join(', ');
+    } else if(isAllDay){
       // Kumpulkan semua kegiatan pada hari ini, urut sesuai urutan jam, lengkap dengan jamnya.
       const activities = state.hours
         .filter(hour => daySchedule[hour.id])
@@ -1035,7 +1102,7 @@ function renderCheckResults(){
     }
   });
 
-  const scopeText = isAllDay ? 'hari ini' : 'jam ini';
+  const scopeText = isSearchMode ? `pukul ${formatQueryTime(queryMinutes)}` : (isAllDay ? 'hari ini' : 'jam ini');
   if(freeCount === 0){
     freeList.innerHTML = `<li class="empty-note" style="background:none;border:none;">Tidak ada yang kosong sepanjang ${scopeText}.</li>`;
   }
@@ -1243,7 +1310,11 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 document.getElementById('checkDay').addEventListener('change', renderCheckResults);
-document.getElementById('checkHour').addEventListener('change', renderCheckResults);
+document.getElementById('checkHour').addEventListener('change', () => {
+  document.getElementById('checkHourSearch').value = '';
+  renderCheckResults();
+});
+document.getElementById('checkHourSearch').addEventListener('input', renderCheckResults);
 
 loadData();
 </script>
