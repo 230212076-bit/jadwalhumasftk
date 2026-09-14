@@ -725,7 +725,8 @@ function defaultHours(){
     { id: "h16", label: "14:00 – 16:20" },
     { id: "h17", label: "14:00 – 17:15" },
     { id: "h18", label: "15:40 – 17:15" },
-    { id: "h19", label: "16:25 – 18:05" }
+    { id: "h19", label: "16:25 – 18:05" },
+    { id: "h20", label: "11:15 – 14:00" }
   ];
 }
 
@@ -795,6 +796,13 @@ function defaultData(){
       } },
     { id: uid('m'), name: "Hafidz", schedule: {
         "Kamis": { "h15": "Fiq Muqarran", "h19": "Tarek Tasyri'" }
+      } },
+    { id: uid('m'), name: "Aja Tara", schedule: {
+        "Senin": { "h5": "Micro Teaching", "h16": "Penelitian BK" },
+        "Rabu": { "h5": "Konseling Lintas Budaya", "h20": "Teknik dan Laboratorium BK" },
+        "Kamis": { "h0": "BK untuk Anak Usia Dini", "h5": "Instrumentasi BK Tes" },
+        "Jumat": { "h0": "Metodologi Penelitian", "h5": "Evaluasi dan Supervisi BK" },
+        "Sabtu": { "h0": "Bahasa Arab" }
       } }
   ];
   return { members, hours: defaultHours() };
